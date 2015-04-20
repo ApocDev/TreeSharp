@@ -38,12 +38,12 @@ namespace TreeSharp
         {
         }
 
-        public Action(ActionDelegate action = null)
+        public Action(ActionDelegate action)
         {
             Runner = action;
         }
 
-        public Action(ActionSucceedDelegate action = null)
+        public Action(ActionSucceedDelegate action)
         {
             SucceedRunner = action;
         }
@@ -64,19 +64,19 @@ namespace TreeSharp
 
         public override sealed IEnumerable<RunStatus> Execute(object context)
         {
-            if (Runner != null)
-            {
-                yield return Runner(context);
-            }
-            else if (SucceedRunner != null)
-            {
-                SucceedRunner(context);
-                yield return RunStatus.Success;
-            }
-            else
-            {
-                yield return Run(context);
-            }
+			RunStatus status = RunStatus.Running;
+			while (status == RunStatus.Running) {
+	            if (Runner != null) {
+					status = Runner(context);
+				} else if (SucceedRunner != null) {
+					SucceedRunner(context);
+					status = RunStatus.Success;
+				} else {
+					status = Run(context);
+				}
+
+				yield return status;
+			}
         }
     }
 }

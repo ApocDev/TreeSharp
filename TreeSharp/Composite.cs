@@ -31,7 +31,7 @@ namespace TreeSharp
     /// </summary>
     public abstract class Composite : IEquatable<Composite>
     {
-        protected static readonly object Locker = new object();
+        // protected static readonly object Locker = new object();
 
         private IEnumerator<RunStatus> _current;
 
@@ -130,7 +130,7 @@ namespace TreeSharp
 
         public RunStatus Tick(object context)
         {
-            lock (Locker)
+            // lock (Locker)
             {
                 if (LastStatus.HasValue && LastStatus != RunStatus.Running)
                 {
@@ -146,7 +146,7 @@ namespace TreeSharp
                 }
                 else
                 {
-                    throw new ApplicationException("Nothing to run? Somethings gone terribly, terribly wrong!");
+                    throw new ApplicationException("Nothing to run? Somethings gone terribly, terribly wrong! last: " + LastStatus);
                 }
 
                 if (LastStatus != RunStatus.Running)
@@ -183,7 +183,7 @@ namespace TreeSharp
         {
             if (CleanupHandlers.Count != 0)
             {
-                lock (Locker)
+                // lock (Locker)
                 {
                     while (CleanupHandlers.Count != 0)
                     {
@@ -215,7 +215,7 @@ namespace TreeSharp
             {
                 if (!IsDisposed)
                 {
-                    lock (Locker)
+                    // lock (Locker)
                     {
                         IsDisposed = true;
                         DoCleanup(Context);

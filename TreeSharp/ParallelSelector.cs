@@ -24,9 +24,9 @@ using System.Collections.Generic;
 
 namespace TreeSharp
 {
-	public class Parallel : Composite
+	public class ParallelSelector : Composite
 	{
-		public Parallel(params Composite[] children)
+		public ParallelSelector(params Composite[] children)
 		{
 			Children = new List<Composite>(children);
 			foreach (Composite composite in Children)
@@ -79,8 +79,8 @@ namespace TreeSharp
 				for (var it = runningChildren.First; it != null;) {
 					var child = it.Value;
 					var result = child.Tick(context);
-					if (result == RunStatus.Failure) {
-						yield return RunStatus.Failure;
+					if (result == RunStatus.Success) {
+						yield return RunStatus.Success;
 						yield break;
 					}
 
@@ -98,7 +98,7 @@ namespace TreeSharp
 				}
 			}
 
-			yield return RunStatus.Success;
+			yield return RunStatus.Failure;
 			yield break;
 		}
 
@@ -106,14 +106,14 @@ namespace TreeSharp
 
 		protected class ChildrenCleanupHandler : CleanupHandler
 		{
-			public ChildrenCleanupHandler(Parallel owner, object context)
+			public ChildrenCleanupHandler(ParallelSelector owner, object context)
 				: base(owner, context)
 			{
 			}
 
 			protected override void DoCleanup(object context)
 			{
-				foreach (Composite composite in (Owner as Parallel).Children)
+				foreach (Composite composite in (Owner as ParallelSelector).Children)
 				{
 					composite.Stop(context);
 				}

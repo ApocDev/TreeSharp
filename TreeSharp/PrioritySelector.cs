@@ -43,7 +43,7 @@ namespace TreeSharp
 
         public override IEnumerable<RunStatus> Execute(object context)
         {
-            lock (Locker)
+            // lock (Locker)
             {
                 // Keep in mind; we ARE an enumerator here. So we do execute each child in tandem.
                 foreach (Composite node in Children)
