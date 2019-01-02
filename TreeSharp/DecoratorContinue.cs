@@ -60,7 +60,15 @@ namespace TreeSharp
 
         public override IEnumerable<RunStatus> Execute(object context)
         {
-            if (!CanRun(context))
+			if (Runner != null)
+            {
+                if (!Runner(context))
+                {
+                    yield return RunStatus.Success;
+                    yield break;
+                }
+            }
+            else if (!CanRun(context))
             {
                 yield return RunStatus.Success;
                 yield break;
